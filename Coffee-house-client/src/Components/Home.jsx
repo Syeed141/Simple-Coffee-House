@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLoaderData } from 'react-router';
+import CoffeeCard from './CoffeeCard';
 
 const Home = () => {
 
@@ -7,8 +8,13 @@ const Home = () => {
 
     console.log(coffees)
     return (
-        <div>
-            <h1>Home</h1>
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
+            {
+
+                coffees.map((coffee) => <CoffeeCard coffee={coffee}> </CoffeeCard>)
+
+
+            }
         </div>
     );
 };
