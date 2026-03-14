@@ -2,8 +2,7 @@ const dns = require("dns");
 // Change DNS
 dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
-
-require('dotenv').config()
+require("dotenv").config();
 const { MongoClient, ServerApiVersion } = require("mongodb");
 
 const express = require("express");
@@ -16,9 +15,7 @@ app.use(cors());
 
 app.use(express.json());
 
-const uri =
-  `mongodb+srv://${process.env.Name}:${process.env.Pass}@cluster0.9fnc4o2.mongodb.net/?appName=Cluster0`;
-
+const uri = `mongodb+srv://${process.env.Name}:${process.env.Pass}@cluster0.9fnc4o2.mongodb.net/?appName=Cluster0`;
 
 const client = new MongoClient(uri, {
   serverApi: {
@@ -30,9 +27,32 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    // Connect the client to the server	(optional starting in v4.7)
+    const database = client.db("Coffee_DB");
+    const collections = database.collection("coffees");
+
+    // route for getting the apis
+
+    app.get("/coffees", async (req, res) => {
+    
+        const cursor = collections.find();
+        const result = await cursor.toArray();
+        res.send(result);
+      
+    });
+
+    // Route for posting
+    app.post("/coffees", async (req, res) => {
+      const newCoffee = req.body;
+
+      console.log(newCoffee);
+
+      const result = await collections.insertOne(newCoffee);
+
+      res.send(result);
+    });
+
     await client.connect();
-    // Send a ping to confirm a successful connection
+
     await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!",
@@ -49,4 +69,3 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
-

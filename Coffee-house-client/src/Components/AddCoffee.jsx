@@ -1,16 +1,37 @@
+import Swal from "sweetalert2";
+
 const AddCoffee = () => {
+  const handleForm = (e) => {
+    e.preventDefault();
 
-    const handleForm = e => {
+    const form = e.target;
 
+    const formData = new FormData(form);
 
-        e.preventDefault();
+    const coffeeData = Object.fromEntries(formData.entries());
 
+    fetch("http://localhost:3000/coffees", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(coffeeData),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("data ", data)
+        console.log(data.insertedId)
+        if (data.insertedId) {
+          Swal.fire({
+            title: "Coffee added successfully",
+            icon: "success",
+            draggable: true,
+          });
 
-
-
-    }
-
-
+          form.reset();
+        }
+      });
+  };
 
   return (
     <div className="bg-[#f4f3f0] min-h-screen py-16 px-4">
@@ -27,7 +48,7 @@ const AddCoffee = () => {
           </p>
         </div>
 
-        <form onClick={handleForm}  className="space-y-6">
+        <form onSubmit={handleForm} className="space-y-6">
           <div className="grid md:grid-cols-2 gap-6 ">
             <div>
               <label className="block text-xl font-semibold text-gray-700 mb-2">
@@ -91,11 +112,11 @@ const AddCoffee = () => {
 
             <div>
               <label className="block text-xl font-semibold text-gray-700 mb-2">
-                Details
+                Price
               </label>
               <input
                 type="text"
-                name="details"
+                name="price"
                 placeholder="Enter coffee details"
                 className="w-full px-4 py-4 rounded bg-white border border-gray-200 outline-none focus:ring-2 focus:ring-[#d2b48c]"
               />
